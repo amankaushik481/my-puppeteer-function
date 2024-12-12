@@ -1,30 +1,41 @@
-const chromium = require('chrome-aws-lambda');
-const puppeteer = require('puppeteer-core');
+import puppeteer from "puppeteer";
 
-exports.handler = async function(event, context) {
-  const browser = await puppeteer.launch({
-    args: chromium.args,
-    executablePath: process.env.CHROME_EXECUTABLE_PATH || await chromium.executablePath,
-    headless: true,
-  });
+export const handler = async (event, context) => {
+  let browser = null;
+  try {
+    // Launch with minimal options
+    browser = await puppeteer.launch({
+      headless: true,
+    });
 
-  const page = await browser.newPage();
+    const page = await browser.newPage();
+    await page.goto('https://spacejelly.dev/', { waitUntil: 'networkidle0' });
 
-  await page.goto('https://spacejelly.dev/');
+    const title = await page.title();
+    const description = await page.$eval('meta[name="description"]', element => element.content);
 
-  const title = await page.title();
-  const description = await page.$eval('meta[name="description"]', element => element.content);
-
-  await browser.close();
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      status: 'Ok',
-      page: {
-        title,
-        description
-      }
-    })
-  };
-}
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        status: 'Ok',
+        page: {
+          title,
+          description
+        }
+      })
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        status: 'Error',
+        message: error.message
+      })
+    };
+  } finally {
+    if (browser !== null) {
+      await browser.close();
+    }
+  }
+};
