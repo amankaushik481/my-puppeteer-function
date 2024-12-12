@@ -6,6 +6,13 @@ export const handler = async (event, context) => {
     // Launch with minimal options
     browser = await puppeteer.launch({
       headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-gpu',
+        '--disable-dev-shm-usage',
+        '--single-process'
+      ]
     });
 
     const page = await browser.newPage();
