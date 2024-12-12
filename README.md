@@ -2,7 +2,7 @@
 
 Demo for tutorial [How to Use Puppeteer to Automate Chrome in an API with Netlify Serverless Functions](https://www.youtube.com/watch?v=DnpjWeDI12Q)
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/your-repo-name)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/amankaushik481/my-puppeteer-function)
 
 📝 Article: https://spacejelly.dev/posts/how-to-use-puppeteer-to-automate-chrome-in-an-api-with-netlify-serverless-functions/
 
