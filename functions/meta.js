@@ -1,25 +1,32 @@
+import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer";
+
+// Configure chromium
+chromium.setHeadlessMode = true;
+chromium.setGraphicsMode = false;
 
 export const handler = async (event, context) => {
   let browser = null;
+
   try {
-    // Launch with minimal options
+    console.log("Launching browser...");
+    const path = process.env.CHROME_EXECUTABLE_PATH || (await chromium.executablePath());
     browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-gpu',
-        '--disable-dev-shm-usage',
-        '--single-process'
-      ]
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: path,
+      headless: chromium.headless,
     });
 
+    console.log("Creating new page...");
     const page = await browser.newPage();
+
     await page.goto('https://spacejelly.dev/', { waitUntil: 'networkidle0' });
+    console.log('Page loaded');
 
     const title = await page.title();
     const description = await page.$eval('meta[name="description"]', element => element.content);
+    console.log('Data extracted:', { title, description });
 
     return {
       statusCode: 200,
